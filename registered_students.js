@@ -2,8 +2,12 @@ console.log('registered_students.js is executing...');
 
 addEventListener('DOMContentLoaded', getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown);
 
-async function getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown()
+const div_get_all_classes = document.getElementById("get_all_classes");
+
+async function getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown(event)
 {
+    //prevent default form submission
+    event.preventDefault();
     console.log('getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown - START');
 
     const API_URL = "http://localhost:8080/classes";
@@ -25,13 +29,13 @@ async function getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown()
         }
         else
         {
-            // TODO: update the HTML with information that we failed to retrieve the classes
+            div_get_all_classes.innerHTML = '<p class="failure">ERROR: failed get classes</p>';
         }
     }
     catch (error)
     {
         console.error(error);
-        // TODO: update the HTML with information that we failed to connect to the API to fetch the classes data
+        div_get_all_classes.innerHTML = '<p class="failure">ERROR: failed to fetch data</p>';
     }
 
     console.log('getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown - END');

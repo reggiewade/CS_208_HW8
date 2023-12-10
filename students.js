@@ -208,9 +208,9 @@ async function handleCreateNewStudentEvent(event)
     const formData = new FormData(id_form_create_new_student);
     const studentData =
         {
-            firstName: formData.get("firstName"),
-            lastName: formData.get("lastName"),
-            birthDate: formData.get("birthDate"),
+            first_name: formData.get("firstName"),
+            last_name: formData.get("lastName"),
+            birth_date: formData.get("birthDate"),
         };
     console.log({studentData});
     await createNewStudent(studentData);
@@ -240,7 +240,6 @@ function renderStudentAsHTML(studentAsJSON)
         <p>Student lastName: ${studentAsJSON.lastName}</p>
         <p>Student birthDate: ${studentAsJSON.birthDate}</p>
         <p>
-            <!-- TODO: this is for extra credit -->
             <a href="students.show.html?student_id=${studentAsJSON.id}">Show this student</a>
         </p>
         <button onclick="handleShowStudentDetailsEvent(event)">Show Student Details</button>

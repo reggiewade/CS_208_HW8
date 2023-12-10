@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  //This is to fit webpage to device width
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">          //This is to make sure the webpage is compatible with Internet Explorer
     <title>Classes Management</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -17,6 +17,7 @@
     <hr>
 
     <h2>Add class</h2>
+    //form that creates a post request to the classes endpoint "http://localhost:8080/classes"
     <form id="id_form_create_new_class" action="http://localhost:8080/classes" method="post">
         <label for="code">Class Code</label>
         <input type="text" name="code" id="code" required>
@@ -64,12 +65,14 @@
 
     <hr>
 
+    //button that creates a get request to the classes endpoint "http://localhost:8080/classes" by calling getAndDisplayAllClasses() function
     <h2>Get all classes</h2>
     <button onclick="getAndDisplayAllClasses();">Get and display all classes</button>
     <div id="list_of_classes">
         The classes returned from the API call will be shown here...
     </div>
 
+    //imports the JavaScript file classes.js
     <script src="classes.js"></script>
 </body>
 
