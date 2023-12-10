@@ -219,6 +219,7 @@ async function handleCreateNewStudentEvent(event)
 
 function displayStudents(listOfStudentsAsJSON)
 {
+    //clear div before writing
     div_list_of_students.innerHTML = '';
 
     for (const studentAsJSON of listOfStudentsAsJSON)

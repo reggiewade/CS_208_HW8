@@ -3,8 +3,43 @@ console.log('registered_students.js is executing...');
 addEventListener('DOMContentLoaded', getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown);
 addEventListener('DOMContentLoaded', getAllStudentsAndRefreshTheSelectStudentForEnrollmentDropdown);
 
+const div_list_of_registered_students = document.getElementById("list_of_registered_students");
+
 const div_fetch_students_status = document.getElementById("fetch_students_status");
 const div_fetch_classes_status = document.getElementById("fetch_classes_status");
+
+
+async function getAllRegisteredStudents () {
+    console.log('getAllRegisterdStudents - START')
+
+    API_URL = "http://localhost:8080/registered_students";
+
+    div_list_of_registered_students.innerHTML = "Calling the API to get the list of students...";
+
+    try {
+        const response = await fetch(API_URL);
+        console.log({response})
+        console.log(`response.status = ${response.status}`);
+        console.log(`response.statusText = ${response.statusText}`);
+        console.log(`response.ok = ${response.ok}`);
+
+        if (response.ok) {
+            
+            div_list_of_registered_students.innerHTML = "Retrieved registered students successfully, we just need to process them..."
+
+            const listOfRegisteredStudents = await response.json();
+            console.log({listOfRegisteredStudents});
+            displayRegisteredStudents(listOfRegisteredStudents);
+        }
+        else {
+            div_list_of_registered_students.innerHTML = `<p registered_students="failure">ERROR: failed to retrieve the registered_students.</p>`;
+        }
+    }
+    catch (error) {
+        console.log(error);
+        div_list_of_registered_students.innerHTML = `<p registered_students="failure">ERROR: failed to connect to the API to fetch the registered_students data.</p>`;
+    }
+}
 
 async function getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown()
 {
@@ -66,6 +101,30 @@ async function getAllStudentsAndRefreshTheSelectStudentForEnrollmentDropdown () 
         div_fetch_students_status.innerHTML = '<p class="failure">ERROR: failed to fetch student data</p>';
     }
 }
+
+
+function displayRegisteredStudents (listOfRegisteredStudentsAsJSON) {
+    div_list_of_registered_students.innerHTML = `<tr>
+                                                 <th>Student ID</th>
+                                                 <th>Student Full Name</th>
+                                                 <th>Class Code and Title</th>
+                                                 </tr>`;
+
+    for (var i = 0; i < listOfRegisteredStudentsAsJSON.length; i++) {
+        div_list_of_registered_students.innerHTML += renderRegisteredStudentInHTML(listOfRegisteredStudentsAsJSON[i]);
+    }
+}
+
+function renderRegisteredStudentInHTML (registeredStudentAsJSON) {
+    return `<table>
+        <tr>
+        <td>${registeredStudentAsJSON.studentId}</td>
+        <td>${registeredStudentAsJSON.studentFullName}</td>
+        <td>${registeredStudentAsJSON.code + " " + registeredStudentAsJSON.title}</td>
+        </tr>
+    </table>`;
+}
+
 
 function refreshTheSelectClassForEnrollmentDropdown(listOfClassesAsJSON)
 {
