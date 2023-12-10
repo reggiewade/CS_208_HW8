@@ -1,9 +1,13 @@
 console.log('registered_students.js is executing...');
 
+const id_form_add_new_student_to_a_class = document.getElementById("id_form_add_new_student_to_a_class");
+id_form_add_new_student_to_a_class.addEventListener('submit', handleAddStudentToClassEvent);
+
 addEventListener('DOMContentLoaded', getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown);
 addEventListener('DOMContentLoaded', getAllStudentsAndRefreshTheSelectStudentForEnrollmentDropdown);
 
 const table_list_of_registered_students = document.getElementById("list_of_registered_students");
+const div_add_student_to_class = document.getElementById("add_student_to_class");
 
 const div_fetch_students_status = document.getElementById("fetch_students_status");
 const div_fetch_classes_status = document.getElementById("fetch_classes_status");
@@ -38,6 +42,37 @@ async function getAllRegisteredStudents () {
     catch (error) {
         console.log(error);
         table_list_of_registered_students.innerHTML = `<tr><td> registered_students="failure">ERROR: failed to connect to the API to fetch the registered_students data.</td></tr>`;
+    }
+}
+
+async function addStudentToClass(registered_student_data) {
+    const API_URL = "http://localhost:8080/registered_students";
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams(registered_student_data)
+        });
+        console.log({response})
+        console.log(`response.status = ${response.status}`);
+        console.log(`response.statusText = ${response.statusText}`);
+        console.log(`response.ok = ${response.ok}`);
+
+        if (response.ok) {
+            const new_registered_student_entry = await response.json();
+            div_add_student_to_class.innerHTML = `<p registered_student="success">Student added to the class successfully.  Student ${new_registered_student_entry.student_id} was registered to ${new_registered_student_entry.class_id}</p>`
+            await getAllRegisteredStudents();
+        }
+        else {
+            div_add_student_to_class.innerHTML = `<p registered_student="failure">ERROR: failed to add student to class</p>`;
+        }
+    }
+    catch (error) {
+        console.log(error);
+        div_add_student_to_class.innerHTML = `<p registered_student="failure">ERROR: failed to connect to the API to add the student`;
     }
 }
 
@@ -102,6 +137,24 @@ async function getAllStudentsAndRefreshTheSelectStudentForEnrollmentDropdown () 
     }
 }
 
+// =====================================================================================================================
+// Functions that update the HTML by manipulating the DOM
+// =====================================================================================================================
+
+async function handleAddStudentToClassEvent(event)
+{
+    // Prevent the default form submission behavior which will cause the page to be redirected to the action URL
+    event.preventDefault();
+
+    const formData = new FormData(id_form_add_new_student_to_a_class);
+    const registered_student_data =
+        {
+            studentId: formData.get("studentId"),
+            classId: formData.get("classId"),
+        };
+    console.log({registered_student_data});
+    await addStudentToClass(registered_student_data);
+}
 
 function displayRegisteredStudents (listOfRegisteredStudentsAsJSON) {
     table_list_of_registered_students.innerHTML = `<tr>
