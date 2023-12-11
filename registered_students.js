@@ -2,6 +2,7 @@ console.log('registered_students.js is executing...');
 
 const id_form_add_new_student_to_a_class = document.getElementById("id_form_add_new_student_to_a_class");
 id_form_add_new_student_to_a_class.addEventListener('submit', handleAddStudentToClassEvent);
+const div_drop_student_from_class = document.getElementById("drop_student_from_class");
 
 addEventListener('DOMContentLoaded', getAllClassesAndRefreshTheSelectClassForEnrollmentDropdown);
 addEventListener('DOMContentLoaded', getAllStudentsAndRefreshTheSelectStudentForEnrollmentDropdown);
@@ -73,6 +74,29 @@ async function addStudentToClass(registered_student_data) {
     catch (error) {
         console.log(error);
         div_add_student_to_class.innerHTML = `<p registered_student="failure">ERROR: failed to connect to the API to add the student`;
+    }
+}
+
+async function dropStudentFromClass (studentId, classId) {
+    const API_URL = `http://localhost:8080/registered_students/${studentId}/${classId}`;
+    try {
+        const response = await fetch(API_URL, {method: "DELETE"});
+        console.log({response});
+        console.log(`response.status = ${response.status}`);
+        console.log(`response.statusText = ${response.statusText}`);
+        console.log(`response.ok = ${response.ok}`);
+
+        if (response.ok) {
+            const deleted_registered_student_entry = await response.json();
+            div_add_student_to_class.innerHTML = `<p registered_student="success">Student dropped from class successfully.  Student ${deleted_registered_student_entry.student_id} was dropped from ${deleted_registered_student_entry.class_id}</p>`
+            await getAllRegisteredStudents();
+        }
+        else {
+            div_add_student_to_class.innerHTML = `<p registered_student="failure">ERROR: failed to drop student from class</p>`;
+        }
+    }
+    catch {
+        div_add_student_to_class.innerHTML = `<p registered_student="failure>ERROR: failed to connect to the API to drop the student`;
     }
 }
 
@@ -161,6 +185,7 @@ function displayRegisteredStudents (listOfRegisteredStudentsAsJSON) {
                                                  <th>Student ID</th>
                                                  <th>Student Full Name</th>
                                                  <th>Class Code and Title</th>
+                                                 <th></th>
                                                  </tr>`;
 
     for (var i = 0; i < listOfRegisteredStudentsAsJSON.length; i++) {
@@ -170,12 +195,32 @@ function displayRegisteredStudents (listOfRegisteredStudentsAsJSON) {
 
 function renderRegisteredStudentInHTML (registeredStudentAsJSON) {
     return `<table>
-        <tr>
-        <td>${registeredStudentAsJSON.studentId}</td>
-        <td>${registeredStudentAsJSON.studentFullName}</td>
-        <td>${registeredStudentAsJSON.code + " " + registeredStudentAsJSON.title}</td>
+        <tr data-studentId="${registeredStudentAsJSON.studentId}" data-classId="${registeredStudentAsJSON.classId}">
+            <td>${registeredStudentAsJSON.studentId}</td>
+            <td>${registeredStudentAsJSON.studentFullName}</td>
+            <td>${registeredStudentAsJSON.code + " " + registeredStudentAsJSON.title}</td>
+            <td>
+                <button onclick="handleDropStudentFromClass(event)">Drop From Class</button>
+            </td>
         </tr>
     </table>`;
+}
+
+async function handleDropStudentFromClass(event) {
+    console.log('handleDropStudentFromClass - START');
+    console.log(`event = ${event}`);
+    console.log({event});
+    //event.target is the button, then .parentElement accesses <td>
+    const studentId = event.target.parentElement.parentElement.getAttribute("data-studentId");
+    const classId = event.target.parentElement.parentElement.getAttribute("data-classId");
+    const eventParentElement = event.target.parentElement;
+    const eventTarget = event.target;
+    console.log({eventParentElement});
+    console.log({eventTarget});
+    console.log({studentId});
+    console.log({classId});
+    await dropStudentFromClass(studentId, classId);
+    console.log('handleDeleteStudentEvent - END');
 }
 
 
