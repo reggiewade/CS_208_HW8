@@ -37,12 +37,12 @@ async function getAllRegisteredStudents () {
             displayRegisteredStudents(listOfRegisteredStudents);
         }
         else {
-            table_list_of_registered_students.innerHTML = `<tr><td> registered_students="failure">ERROR: failed to retrieve the registered_students.</td></tr>`;
+            table_list_of_registered_students.innerHTML = `<tr><td registered_students="failure">ERROR: failed to retrieve the registered_students.</td></tr>`;
         }
     }
     catch (error) {
         console.log(error);
-        table_list_of_registered_students.innerHTML = `<tr><td> registered_students="failure">ERROR: failed to connect to the API to fetch the registered_students data.</td></tr>`;
+        table_list_of_registered_students.innerHTML = `<tr><td registered_students="failure">ERROR: failed to connect to the API to fetch the registered_students data.</td></tr>`;
     }
 }
 

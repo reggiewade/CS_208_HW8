@@ -295,16 +295,16 @@ async function handleUpdateStudentDetailsEvent(event)
         `<form id="id_form_update_student_details">
             <input type="hidden" name="id" value="${studentAsJSON.id}">
 
-            <label for="update_code">Student Code</label>
-            <input type="text" name="code" id="update_firstName" value="${studentAsJSON.firstName}" required>
+            <label for="update_firstName">First Name</label>
+            <input type="text" name="firstName" id="update_firstName" value="${studentAsJSON.firstName}" required>
             <br>
 
-            <label for="update_title">Student Title</label>
-            <input type="text" name="title" id="update_lastName" value="${studentAsJSON.lastName}">
+            <label for="update_lastName">Last Name</label>
+            <input type="text" name="lastName" id="update_lastName" value="${studentAsJSON.lastName}">
             <br>
 
-            <label for="update_description">Student Description</label>
-            <input type="text" name="description" id="update_birthDate" value="${studentAsJSON.birthDate}">
+            <label for="update_birthDate">Birth Date</label>
+            <input type="text" name="birthDate" id="update_birthDate" value="${studentAsJSON.birthDate}">
             <br>
 
             <button type="submit">Update student details</button>
@@ -319,9 +319,9 @@ async function handleUpdateStudentDetailsEvent(event)
         const studentData =
             {
                 id: formData.get("id"),
-                firstName: formData.get("firstName"),
-                lastName: formData.get("lastName"),
-                birthDate: formData.get("birthDate"),
+                first_name: formData.get("firstName"),
+                last_name: formData.get("lastName"),
+                birth_date: formData.get("birthDate"),
             };
         console.log({studentData});
         updateStudent(studentData);
